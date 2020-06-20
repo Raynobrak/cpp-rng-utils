@@ -8,14 +8,15 @@
 #endif // USE_SFML
 
 namespace rng_utils {
+
 	// Generates a random integer between the given boundaries.
 	int rnd_int(int lowerInc, int upperInc);
 
-	// Generates a random normalized float (between -1 and 1). The "precision" tells how small the gap between 2 randomly generated numbers can be (the bigger the precision, the smaller the gap). 
-	float rnd_float_normalized(int precision = 10000000);
-
 	// Generates a random float within the given boundaries.
 	float rnd_float(float min, float max);
+
+	// Generates a random normalized float (between -1 and 1).
+	float rnd_normal_float();
 
 	// Generates a float representing an angle in degrees (between 0 and 360).
 	float rnd_angle_deg();

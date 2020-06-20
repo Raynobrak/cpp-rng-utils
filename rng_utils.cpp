@@ -4,19 +4,24 @@
 #include "rng_utils.h"
 
 namespace rng_utils {
-	int rnd_int(int lowerInc, int upperInc) {
+	// Returns a reference to a static instance of the random engine
+	std::default_random_engine& get_random_engine() {
 		static std::default_random_engine rng{ static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()) };
-		std::uniform_int_distribution<int> dist(lowerInc, upperInc);
-		return dist(rng);
+		return rng;
 	}
 
-	float rnd_float_normalized(int precision) {
-		return static_cast<float>(static_cast<float>(rnd_int(-precision, precision))) / static_cast<float>(precision);
+	int rnd_int(int lowerInc, int upperInc) {
+		std::uniform_int_distribution<int> distribution(lowerInc, upperInc);
+		return distribution(get_random_engine());
 	}
 
 	float rnd_float(float min, float max) {
-		auto val = ((min + max) + rnd_float_normalized() * (max - min)) / 2.f;
-		return val;
+		std::uniform_real_distribution<float> distribution(min, max);
+		return distribution(get_random_engine());
+	}
+
+	float rnd_normal_float() {
+		return rnd_float(-1.f, 1.f);
 	}
 
 	float rnd_angle_deg() {
@@ -44,7 +49,7 @@ namespace rng_utils {
 	}
 
 	sf::Vector2f rnd_point_on_rect(sf::Vector2f center, float width, float height) {
-		return center + sf::Vector2f(rnd_float_normalized(width / 2.f), rnd_float_normalized(height / 2.f));
+		return center + sf::Vector2f(rnd_normal_float() * (width / 2.f), rnd_normal_float() * (height / 2.f));
 	}
 
 	sf::Vector2f rnd_point_on_circle(float circleRadius, sf::Vector2f circleCenter) {
